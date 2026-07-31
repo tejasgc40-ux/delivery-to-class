@@ -100,7 +100,7 @@ export default function AdminPanelPage() {
               <div key={ord.id} className="py-3 flex flex-col sm:flex-row sm:items-center justify-between text-xs gap-2">
                 <div>
                   <span className="font-bold text-slate-900 dark:text-white">{ord.orderNumber}</span>
-                  <span className="text-slate-400"> — {ord.customerName} ({ord.deliveryAddress.building})</span>
+                  <span className="text-slate-400"> — {ord.customerName} ({ord.deliveryAddress.blockName})</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="font-bold text-brand-500">{formatCurrency(ord.totalAmount)}</span>
