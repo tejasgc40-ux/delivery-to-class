@@ -35,26 +35,28 @@ export default function LoginPage() {
 
         <form onSubmit={handleLogin} className="space-y-4 text-left">
           <div>
-            <label className="text-xs font-bold text-slate-600 dark:text-slate-300">Campus Email</label>
+            <label htmlFor="login-email" className="text-xs font-bold text-slate-600 dark:text-slate-300">Campus Email</label>
             <div className="relative mt-1">
-              <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3.5" />
+              <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3.5" aria-hidden="true" />
               <input
+                id="login-email"
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="student@campus.edu"
-                className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white"
+                className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white transition-colors focus:border-brand-500"
               />
             </div>
           </div>
 
           <div>
-            <label className="text-xs font-bold text-slate-600 dark:text-slate-300">Select Role</label>
+            <label htmlFor="login-role" className="text-xs font-bold text-slate-600 dark:text-slate-300">Select Role</label>
             <select
+              id="login-role"
               value={role}
               onChange={(e) => setRole(e.target.value as UserRole)}
-              className="w-full mt-1 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white"
+              className="w-full mt-1 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white transition-colors focus:border-brand-500"
             >
               <option value="CUSTOMER">Student Customer</option>
               <option value="DELIVERY_PARTNER">Delivery Partner</option>
@@ -65,10 +67,11 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            className="w-full py-3 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs shadow-md shadow-brand-500/20 transition-all flex items-center justify-center gap-1.5"
+            disabled={!email}
+            className="w-full py-3 rounded-xl bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-xs shadow-md shadow-brand-500/20 transition-all flex items-center justify-center gap-1.5"
           >
             <span>Login to Campus Platform</span>
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-4 h-4" aria-hidden="true" />
           </button>
         </form>
       </div>

@@ -119,7 +119,7 @@ export default function CartPage() {
         <div className="lg:col-span-2 space-y-6">
           
           {/* Order Items Summary List */}
-          <div className="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+          <div className="surface-card p-5 space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
               <h3 className="font-bold text-sm text-slate-900 dark:text-white">Selected Order Items</h3>
               <button onClick={clearCart} className="text-xs text-rose-500 font-bold hover:underline">
@@ -140,14 +140,30 @@ export default function CartPage() {
 
                   <div className="flex items-center gap-3">
                     <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-lg text-xs font-bold">
-                      <button onClick={() => updateQuantity(product.id, quantity - 1)} className="px-1 text-slate-500 hover:text-slate-900 dark:hover:text-white">-</button>
-                      <span>{quantity}</span>
-                      <button onClick={() => updateQuantity(product.id, quantity + 1)} className="px-1 text-slate-500 hover:text-slate-900 dark:hover:text-white">+</button>
+                      <button
+                        onClick={() => updateQuantity(product.id, quantity - 1)}
+                        aria-label={`Decrease quantity of ${product.name}`}
+                        className="px-1 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+                      >
+                        -
+                      </button>
+                      <span aria-live="polite">{quantity}</span>
+                      <button
+                        onClick={() => updateQuantity(product.id, quantity + 1)}
+                        aria-label={`Increase quantity of ${product.name}`}
+                        className="px-1 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+                      >
+                        +
+                      </button>
                     </div>
                     <span className="font-black text-xs text-slate-900 dark:text-white w-14 text-right">
                       {formatCurrency(product.price * quantity)}
                     </span>
-                    <button onClick={() => removeFromCart(product.id)} className="text-slate-400 hover:text-rose-500">
+                    <button
+                      onClick={() => removeFromCart(product.id)}
+                      aria-label={`Remove ${product.name} from cart`}
+                      className="text-slate-400 hover:text-rose-500 transition-colors"
+                    >
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
@@ -157,7 +173,7 @@ export default function CartPage() {
           </div>
 
           {/* Delivery Classroom Address Form */}
-          <form id="checkout-form" onSubmit={handlePlaceOrder} className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+          <form id="checkout-form" onSubmit={handlePlaceOrder} className="surface-card p-6 space-y-4">
             <h3 className="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
               <MapPin className="w-5 h-5 text-brand-500" />
               <span>Classroom Delivery Details</span>
@@ -256,7 +272,7 @@ export default function CartPage() {
         <div className="space-y-6">
           
           {/* Payment Method Picker */}
-          <div className="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+          <div className="surface-card p-5 space-y-4">
             <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
               <Banknote className="w-4 h-4 text-emerald-500" />
               <span>Direct Payment Option</span>
@@ -325,7 +341,7 @@ export default function CartPage() {
           </div>
 
           {/* Bill Summary */}
-          <div className="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+          <div className="surface-card p-5 space-y-3">
             <h3 className="font-bold text-sm text-slate-900 dark:text-white">Bill Summary</h3>
 
             <div className="space-y-2 text-xs text-slate-600 dark:text-slate-300">

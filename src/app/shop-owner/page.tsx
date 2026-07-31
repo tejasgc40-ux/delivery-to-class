@@ -174,7 +174,7 @@ export default function ShopOwnerPage() {
                 return (
                   <div
                     key={ord.id}
-                    className="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-3"
+                    className="surface-card p-5 space-y-3"
                   >
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
                       <div>

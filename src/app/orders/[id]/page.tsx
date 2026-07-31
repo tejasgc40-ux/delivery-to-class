@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useOrders } from '../../../context/OrderContext';
 import { CampusMapWrapper } from '../../../components/map/CampusMapWrapper';
 import { getStatusBadge, formatCurrency, generateUpiUri } from '../../../lib/utils';
-import { Clock, MapPin, CheckCircle2, Phone, QrCode, ArrowLeft, Bike, Store, AlertCircle } from 'lucide-react';
+import { Clock, MapPin, CheckCircle2, Circle, Phone, QrCode, ArrowLeft, Bike, Store, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 
 export default function OrderTrackingPage() {
@@ -21,10 +21,19 @@ export default function OrderTrackingPage() {
 
   if (!order) {
     return (
-      <div className="text-center py-20">
-        <h2 className="text-lg font-bold">No Order Found</h2>
-        <Link href="/" className="text-brand-500 font-bold underline text-xs mt-2 block">
-          Back to Home
+      <div className="max-w-md mx-auto text-center py-24 space-y-4">
+        <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto text-slate-400">
+          <AlertCircle className="w-8 h-8" />
+        </div>
+        <h2 className="text-xl font-black text-slate-900 dark:text-white">No Order Found</h2>
+        <p className="text-xs text-slate-500 dark:text-slate-400">
+          We couldn't find an order matching this link. It may have been removed or the link is incorrect.
+        </p>
+        <Link
+          href="/"
+          className="inline-block px-6 py-3 rounded-2xl bg-brand-500 text-white font-bold text-xs shadow-md hover:bg-brand-600 transition-all"
+        >
+          Back to Campus Shops
         </Link>
       </div>
     );
@@ -90,33 +99,57 @@ export default function OrderTrackingPage() {
         )}
       </div>
 
-      {/* Visual State Machine Progress Bar */}
-      <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+      {/* Visual State Machine Progress Timeline */}
+      <div className="surface-card p-6 space-y-5">
         <h3 className="font-bold text-xs text-slate-400 uppercase tracking-wider">
           Classroom Delivery Progress
         </h3>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
+        <ol className="space-y-0">
           {steps.map((step, idx) => {
             const isDone = idx <= currentStepIndex;
             const isCurrent = idx === currentStepIndex;
+            const isLast = idx === steps.length - 1;
             return (
-              <div
-                key={step.id}
-                className={`p-2.5 rounded-2xl border text-center transition-all ${
-                  isCurrent
-                    ? 'bg-brand-500 text-white border-brand-500 font-bold shadow-md scale-105'
-                    : isDone
-                    ? 'bg-brand-50 dark:bg-brand-950/40 text-brand-700 dark:text-brand-300 border-brand-200 dark:border-brand-800 font-semibold'
-                    : 'bg-slate-50 dark:bg-slate-800 text-slate-400 border-slate-200 dark:border-slate-700 font-medium'
-                }`}
-              >
-                <div className="text-[10px] uppercase tracking-wider mb-0.5">Step 0{idx + 1}</div>
-                <div className="text-[11px] leading-tight line-clamp-1">{step.label}</div>
-              </div>
+              <li key={step.id} className="flex items-start gap-3">
+                <div className="relative flex flex-col items-center">
+                  <div
+                    className={`flex items-center justify-center w-6 h-6 rounded-full transition-all ${
+                      isDone
+                        ? 'text-brand-500'
+                        : 'text-slate-300 dark:text-slate-700'
+                    } ${isCurrent ? 'scale-110' : ''}`}
+                  >
+                    {isDone ? <CheckCircle2 className="w-6 h-6" /> : <Circle className="w-6 h-6" />}
+                  </div>
+                  {!isLast && (
+                    <div
+                      className={`w-0.5 h-8 -translate-y-0 transition-colors ${
+                        idx < currentStepIndex ? 'bg-brand-500' : 'bg-slate-200 dark:bg-slate-800'
+                      }`}
+                    />
+                  )}
+                </div>
+                <div className={`pb-8 ${isLast ? 'pb-0' : ''}`}>
+                  <p
+                    className={`text-sm ${
+                      isCurrent
+                        ? 'font-black text-brand-500'
+                        : isDone
+                        ? 'font-semibold text-slate-700 dark:text-slate-300'
+                        : 'font-medium text-slate-400 dark:text-slate-600'
+                    }`}
+                  >
+                    {step.label}
+                  </p>
+                  {isCurrent && (
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Current status</p>
+                  )}
+                </div>
+              </li>
             );
           })}
-        </div>
+        </ol>
       </div>
 
       {/* Live Map Tracking */}
@@ -145,7 +178,7 @@ export default function OrderTrackingPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         
         {/* Partner Card */}
-        <div className="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+        <div className="surface-card p-5 space-y-3">
           <div className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
             <Bike className="w-4 h-4 text-emerald-500" />
             <span>Assigned Student Partner</span>
@@ -194,7 +227,7 @@ export default function OrderTrackingPage() {
         </div>
 
         {/* Address Card */}
-        <div className="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+        <div className="surface-card p-5 space-y-3">
           <div className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
             <MapPin className="w-4 h-4 text-brand-500" />
             <span>Classroom Destination</span>
@@ -226,7 +259,7 @@ export default function OrderTrackingPage() {
       </div>
 
       {/* Order Items Table */}
-      <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+      <div className="surface-card p-6 space-y-4">
         <h3 className="font-bold text-sm text-slate-900 dark:text-white">Ordered Products</h3>
         <div className="divide-y divide-slate-100 dark:divide-slate-800 text-xs">
           {order.items.map((item) => (
