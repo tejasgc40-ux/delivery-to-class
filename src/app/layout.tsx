@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { AuthProvider } from '../context/AuthContext';
 import { CartProvider } from '../context/CartContext';
@@ -12,7 +12,12 @@ import { BottomNav } from '../components/common/BottomNav';
 export const metadata: Metadata = {
   title: 'Delivery To Class | Campus Hyperlocal Delivery',
   description: 'Order food, snacks, cold coffee & xerox printouts delivered directly to your classroom desk during break hours.',
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({

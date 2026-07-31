@@ -14,6 +14,7 @@ export default function ShopDetailPage() {
   const shopId = params.id as string;
   const { shops, products, reviews, addReview } = useOrders();
   const { items, subtotal } = useCart();
+  const totalCartCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
   const shop = shops.find((s) => s.id === shopId);
   const shopProducts = products.filter((p) => p.shopId === shopId);

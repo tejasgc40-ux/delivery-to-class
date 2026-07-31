@@ -35,7 +35,7 @@ export default function CartPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Selected building object
-  const currentBuilding = INITIAL_CAMPUS_BUILDINGS.find((b) => b.name === deliveryAddress.building) || INITIAL_CAMPUS_BUILDINGS[0];
+  const currentBuilding = INITIAL_CAMPUS_BUILDINGS.find((b) => b.name === deliveryAddress.blockName) || INITIAL_CAMPUS_BUILDINGS[0];
 
   if (items.length === 0 || !shop) {
     return (
@@ -74,7 +74,6 @@ export default function CartPage() {
 
     setTimeout(() => {
       const createdOrder = placeOrder({
-        orderNumber: `D2C-${Math.floor(1000 + Math.random() * 9000)}`,
         customerId: 'user-demo-student',
         customerName: 'Alex Johnson (Student)',
         shopId: shop.id,
