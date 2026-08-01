@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '../../../context/AuthContext';
 import { UserRole } from '../../../types';
 import { ShoppingBag, Mail, ArrowRight, User, Bike, Store, Shield } from 'lucide-react';
+import { useToast } from '../../../components/common/Toast';
 
 const ROLE_OPTIONS: { value: UserRole; label: string; icon: React.ElementType }[] = [
   { value: 'CUSTOMER', label: 'Student Customer', icon: User },
@@ -16,6 +17,7 @@ const ROLE_OPTIONS: { value: UserRole; label: string; icon: React.ElementType }[
 export default function LoginPage() {
   const router = useRouter();
   const { loginWithEmail } = useAuth();
+  const { showToast } = useToast();
   const [email, setEmail] = useState('');
   const [role, setRole] = useState<UserRole>('CUSTOMER');
 
@@ -23,6 +25,7 @@ export default function LoginPage() {
     e.preventDefault();
     if (!email) return;
     loginWithEmail(email, role);
+    showToast('Logged in successfully. Welcome back!', 'success');
     router.push('/');
   };
 
@@ -95,7 +98,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={!email}
-              className="w-full py-3 rounded-xl bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-xs shadow-md shadow-brand-500/20 transition-all flex items-center justify-center gap-1.5"
+              className="w-full py-3 rounded-xl bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-xs shadow-md shadow-brand-500/20 transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-1.5"
             >
               <span>Login to Campus Platform</span>
               <ArrowRight className="w-4 h-4" aria-hidden="true" />

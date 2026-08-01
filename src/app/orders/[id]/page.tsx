@@ -7,12 +7,14 @@ import { CampusMapWrapper } from '../../../components/map/CampusMapWrapper';
 import { getStatusBadge, formatCurrency, generateUpiUri } from '../../../lib/utils';
 import { Clock, MapPin, CheckCircle2, Circle, Phone, QrCode, ArrowLeft, Bike, Store, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
+import { useToast } from '../../../components/common/Toast';
 
 export default function OrderTrackingPage() {
   const params = useParams();
   const router = useRouter();
   const orderId = params.id as string;
   const { orders, markPaymentReceived } = useOrders();
+  const { showToast } = useToast();
 
   // Find target order or default to latest order
   const order = orders.find((o) => o.id === orderId || o.orderNumber === orderId) || orders[0];
@@ -217,8 +219,11 @@ export default function OrderTrackingPage() {
             <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 text-xs font-bold flex items-center justify-between border border-amber-200 dark:border-amber-800">
               <span>Pay {formatCurrency(order.totalAmount)} via {order.paymentMethod}</span>
               <button
-                onClick={() => markPaymentReceived(order.id)}
-                className="px-2.5 py-1 rounded-lg bg-amber-500 text-white text-[10px] font-bold hover:bg-amber-600"
+                onClick={() => {
+                  markPaymentReceived(order.id);
+                  showToast('Payment marked as received', 'success');
+                }}
+                className="px-2.5 py-1 rounded-lg bg-amber-500 text-white text-[10px] font-bold hover:bg-amber-600 transition-colors active:scale-95"
               >
                 Mark Paid
               </button>

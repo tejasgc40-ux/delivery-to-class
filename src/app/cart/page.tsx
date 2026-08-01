@@ -9,6 +9,7 @@ import { formatCurrency } from '../../lib/utils';
 import { PaymentMethod } from '../../types';
 import { ShoppingBag, MapPin, Clock, Banknote, ArrowRight, Trash2, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
+import { useToast } from '../../components/common/Toast';
 
 export default function CartPage() {
   const router = useRouter();
@@ -32,6 +33,7 @@ export default function CartPage() {
   } = useCart();
 
   const { placeOrder } = useOrders();
+  const { showToast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Selected building object
@@ -61,12 +63,12 @@ export default function CartPage() {
     e.preventDefault();
 
     if (!deliveryAddress.blockName || !deliveryAddress.blockName.trim()) {
-      alert('Block Name is required to place an order!');
+      showToast('Block Name is required to place an order!', 'error');
       return;
     }
 
     if (!deliveryAddress.classroomNumber || !deliveryAddress.classroomNumber.trim()) {
-      alert('Classroom Number is required to place an order!');
+      showToast('Classroom Number is required to place an order!', 'error');
       return;
     }
 
@@ -92,6 +94,7 @@ export default function CartPage() {
 
       clearCart();
       setIsSubmitting(false);
+      showToast('Order placed successfully!', 'success');
       router.push(`/orders/${createdOrder.id}`);
     }, 800);
   };

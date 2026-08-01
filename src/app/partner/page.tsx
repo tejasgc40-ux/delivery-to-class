@@ -6,10 +6,12 @@ import { useAuth } from '../../context/AuthContext';
 import { formatCurrency, getStatusBadge } from '../../lib/utils';
 import { Bike, CheckCircle2, Clock, MapPin, Phone, QrCode, ShieldCheck, Zap, DollarSign } from 'lucide-react';
 import Link from 'next/link';
+import { useToast } from '../../components/common/Toast';
 
 export default function PartnerConsolePage() {
   const { user } = useAuth();
   const { orders, updateOrderStatus, acceptDelivery, markPaymentReceived, partners } = useOrders();
+  const { showToast } = useToast();
 
   const [isAvailable, setIsAvailable] = useState(true);
   const [activeTab, setActiveTab] = useState<'available' | 'my_deliveries'>('available');
@@ -27,6 +29,17 @@ export default function PartnerConsolePage() {
   const handleAcceptOrder = (orderId: string) => {
     acceptDelivery(orderId, partnerProfile);
     setActiveTab('my_deliveries');
+    showToast('Delivery accepted — added to your deliveries', 'success');
+  };
+
+  const handlePickedUp = (orderId: string) => {
+    updateOrderStatus(orderId, 'PICKED_UP');
+    showToast('Order marked as picked up', 'success');
+  };
+
+  const handleMarkPaymentReceived = (orderId: string) => {
+    markPaymentReceived(orderId);
+    showToast('Payment marked as received', 'success');
   };
 
   return (
@@ -58,7 +71,10 @@ export default function PartnerConsolePage() {
             </p>
           </div>
           <button
-            onClick={() => setIsAvailable(!isAvailable)}
+            onClick={() => {
+              setIsAvailable(!isAvailable);
+              showToast(isAvailable ? 'You are now offline' : 'You are now available for deliveries', 'info');
+            }}
             className={`w-12 h-6 rounded-full p-1 transition-colors relative ${
               isAvailable ? 'bg-emerald-400' : 'bg-slate-600'
             }`}
@@ -246,7 +262,7 @@ export default function PartnerConsolePage() {
                     <div className="flex flex-wrap items-center gap-2 pt-1">
                       {ord.status === 'ACCEPTED_BY_PARTNER' && (
                         <button
-                          onClick={() => updateOrderStatus(ord.id, 'PICKED_UP')}
+                          onClick={() => handlePickedUp(ord.id)}
                           className="px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs"
                         >
                           Mark Picked Up from Shop
@@ -255,7 +271,7 @@ export default function PartnerConsolePage() {
 
                       {ord.status === 'PICKED_UP' && (
                         <button
-                          onClick={() => markPaymentReceived(ord.id)}
+                          onClick={() => handleMarkPaymentReceived(ord.id)}
                           className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-md"
                         >
                           <CheckCircle2 className="w-4 h-4" />

@@ -5,6 +5,7 @@ import { Product, Shop } from '../../types';
 import { useCart } from '../../context/CartContext';
 import { formatCurrency } from '../../lib/utils';
 import { Plus, Minus, Clock, Check } from 'lucide-react';
+import { useToast } from '../common/Toast';
 
 interface ProductCardProps {
   product: Product;
@@ -13,9 +14,15 @@ interface ProductCardProps {
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product, shop }) => {
   const { items, addToCart, updateQuantity } = useCart();
+  const { showToast } = useToast();
 
   const cartItem = items.find((i) => i.product.id === product.id);
   const quantity = cartItem?.quantity || 0;
+
+  const handleAdd = () => {
+    addToCart(product, shop);
+    showToast(`${product.name} added to cart`, 'success');
+  };
 
   return (
     <div className="bg-white dark:bg-slate-800/90 rounded-2xl p-4 border border-slate-200 dark:border-slate-700/70 shadow-sm hover:shadow-md transition-all flex flex-col sm:flex-row gap-4 items-center justify-between">
@@ -72,16 +79,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, shop }) => {
           </button>
         ) : quantity === 0 ? (
           <button
-            onClick={() => addToCart(product, shop)}
-            className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 active:scale-95 text-white font-bold text-xs shadow-md shadow-brand-500/20 transition-all flex items-center justify-center gap-1.5"
+            onClick={handleAdd}
+            className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 active:scale-95 text-white font-bold text-xs shadow-md shadow-brand-500/20 transition-all duration-200 flex items-center justify-center gap-1.5"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4" aria-hidden="true" />
             <span>Add To Cart</span>
           </button>
         ) : (
           <div className="flex items-center justify-center gap-3 bg-brand-500 text-white rounded-xl px-3 py-1.5 shadow-md">
             <button
               onClick={() => updateQuantity(product.id, quantity - 1)}
+              aria-label={`Decrease quantity of ${product.name}`}
               className="p-1 hover:bg-brand-600 rounded-lg transition-colors"
             >
               <Minus className="w-3.5 h-3.5" />
@@ -91,9 +99,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, shop }) => {
             </span>
             <button
               onClick={() => updateQuantity(product.id, quantity + 1)}
+              aria-label={`Increase quantity of ${product.name}`}
               className="p-1 hover:bg-brand-600 rounded-lg transition-colors"
             >
-              <Plus className="w-3.5 h-3.5" />
+              <Plus className="w-3.5 h-3.5" aria-hidden="true" />
             </button>
           </div>
         )}

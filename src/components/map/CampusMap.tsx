@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Shop } from '../../types';
 import { calculateDistanceKm, calculateWalkingMinutes } from '../../lib/utils';
 import { MapPin, Navigation, Compass, Layers, Phone } from 'lucide-react';
+import { useToast } from '../common/Toast';
 import 'leaflet/dist/leaflet.css';
 
 interface CampusMapProps {
@@ -37,6 +38,7 @@ export const CampusMapContent: React.FC<CampusMapProps> = ({
   const [mapInstance, setMapInstance] = useState<any>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number }>({ lat: userLat, lng: userLng });
   const [isLocating, setIsLocating] = useState(false);
+  const { showToast } = useToast();
 
   useEffect(() => {
     // Dynamic client-side import for Leaflet
@@ -179,7 +181,7 @@ export const CampusMapContent: React.FC<CampusMapProps> = ({
         (error) => {
           console.warn('Geolocation error fallback to campus center:', error);
           setIsLocating(false);
-          alert('Using default SRM Campus location.');
+          showToast('Using default SRM Campus location.', 'info');
         }
       );
     } else {

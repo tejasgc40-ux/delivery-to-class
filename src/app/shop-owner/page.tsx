@@ -3,11 +3,25 @@
 import React, { useState } from 'react';
 import { useOrders } from '../../context/OrderContext';
 import { formatCurrency, getStatusBadge } from '../../lib/utils';
-import { Product } from '../../types';
+import { Product, OrderStatus } from '../../types';
 import { Store, Plus, Clock, CheckCircle2, XCircle, DollarSign, Package, ToggleLeft, ToggleRight, Edit3, Trash2 } from 'lucide-react';
+import { useToast } from '../../components/common/Toast';
 
 export default function ShopOwnerPage() {
   const { shops, products, orders, updateOrderStatus, toggleShopOpen, addProduct, updateProduct, deleteProduct } = useOrders();
+  const { showToast } = useToast();
+
+  const STATUS_MESSAGES: Record<string, string> = {
+    ACCEPTED_BY_SHOP: 'Order accepted',
+    CANCELLED: 'Order rejected',
+    PREPARING: 'Order marked as preparing',
+    READY_FOR_PICKUP: 'Order marked ready for pickup',
+  };
+
+  const handleStatusUpdate = (orderId: string, status: OrderStatus) => {
+    updateOrderStatus(orderId, status);
+    showToast(STATUS_MESSAGES[status] || 'Order updated', status === 'CANCELLED' ? 'error' : 'success');
+  };
 
   const myShop = shops[0]; // Active canteen shop
   const myProducts = products.filter((p) => p.shopId === myShop.id);
@@ -75,7 +89,11 @@ export default function ShopOwnerPage() {
             </p>
           </div>
           <button
-            onClick={() => toggleShopOpen(myShop.id)}
+            onClick={() => {
+              toggleShopOpen(myShop.id);
+              showToast(myShop.isOpen ? 'Shop closed for orders' : 'Shop is now open for orders', 'info');
+            }}
+            aria-label={myShop.isOpen ? 'Close shop for orders' : 'Open shop for orders'}
             className={`w-12 h-6 rounded-full p-1 transition-colors relative ${
               myShop.isOpen ? 'bg-brand-400' : 'bg-slate-600'
             }`}
@@ -212,13 +230,13 @@ export default function ShopOwnerPage() {
                       {ord.status === 'PLACED' && (
                         <>
                           <button
-                            onClick={() => updateOrderStatus(ord.id, 'ACCEPTED_BY_SHOP')}
+                            onClick={() => handleStatusUpdate(ord.id, 'ACCEPTED_BY_SHOP')}
                             className="px-4 py-2 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs"
                           >
                             Accept Order
                           </button>
                           <button
-                            onClick={() => updateOrderStatus(ord.id, 'CANCELLED')}
+                            onClick={() => handleStatusUpdate(ord.id, 'CANCELLED')}
                             className="px-4 py-2 rounded-xl bg-rose-500 text-white font-bold text-xs"
                           >
                             Reject
@@ -228,7 +246,7 @@ export default function ShopOwnerPage() {
 
                       {ord.status === 'ACCEPTED_BY_SHOP' && (
                         <button
-                          onClick={() => updateOrderStatus(ord.id, 'PREPARING')}
+                          onClick={() => handleStatusUpdate(ord.id, 'PREPARING')}
                           className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs"
                         >
                           Start Preparing Food/Items
@@ -237,7 +255,7 @@ export default function ShopOwnerPage() {
 
                       {ord.status === 'PREPARING' && (
                         <button
-                          onClick={() => updateOrderStatus(ord.id, 'READY_FOR_PICKUP')}
+                          onClick={() => handleStatusUpdate(ord.id, 'READY_FOR_PICKUP')}
                           className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs"
                         >
                           Mark Ready For Student Partner Pickup
